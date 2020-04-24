@@ -16,7 +16,7 @@ const unsplash = new Unsplash({
 function saveImageToDisk(photoUrl) {
   // Create a writable path for the target file, '.pipe()' connects 
   // readable data to the writeable stream.
-  const file = fs.createWriteStream('file.jpeg')
+  const file = fs.createWriteStream('./images/file.jpeg')
   const request = https.get(`${photoUrl}`, function (response) {
     response.pipe(file)
   });
