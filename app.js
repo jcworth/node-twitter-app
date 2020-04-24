@@ -23,42 +23,42 @@ console.log('Querying Unsplash...')
 
 // Search unsplash for a photo, then download it,
 // then attach it to a tweet
-const fetchPhoto = unsplash.photos.getRandomPhoto({
-  query: 'brutalist architecture'
+let fetchPhoto = unsplash.photos.getRandomPhoto({
+  query: 'brutalist + architecture'
 })
   .then(response => response.json())
   .then(data => saveImageToDisk(data))
-  .then(data => sendTweet(data))
   .catch(error => console.log(error))
 
 function saveImageToDisk(data) {
   // Create a writable path for the target file, '.pipe()' connects 
   // readable data to the writeable stream.
   console.log('Saving image to disk...')
-  const file = fs.createWriteStream('./images/file.jpeg')
-  const request = https.get(data.urls.raw, (response) => {
-    response.pipe(file);
+  let file = fs.createWriteStream('./images/file.jpeg')
+  const request = https.get(data.urls.regular, (response) => {
+    response.pipe(file)
+      .on('finish', () => {
+        console.log('Image saved!')
+        sendTweet(data);
+      })
   });
-  console.log('Image saved!')
-  return data;
 }
 
 // Wrapper function for composing a tweet. First uploads
 // the saved image, then writes the text.
 function sendTweet(data) {
-  // console.log(data.urls.raw)
+  // console.log(data.urls)
   // console.log(data.user.links.html)
-  const file = './images/file.jpeg';
+  let file = './images/file.jpeg';
+  console.log(file);
   const params = {
     encoding: 'base64'
   }
   const base64content = fs.readFileSync(file, params);
-  console.log(base64content)
 
   T.post('media/upload', { media_data: base64content }, uploaded);
 
   function uploaded(err, data, response) {
-    // Tweet goes here
     if (err) {
       console.log(err)
     } else {
