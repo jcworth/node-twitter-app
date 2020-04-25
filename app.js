@@ -23,12 +23,18 @@ console.log('Querying Unsplash...')
 
 // Search unsplash for a photo, then download it,
 // then attach it to a tweet
-let fetchPhoto = unsplash.photos.getRandomPhoto({
-  query: 'brutalist + architecture'
-})
-  .then(response => response.json())
-  .then(data => saveImageToDisk(data))
-  .catch(error => console.log(error))
+
+function runTweet() {
+  let fetchPhoto = unsplash.photos.getRandomPhoto({
+    query: 'concrete brutalism'
+  })
+    .then(response => response.json())
+    .then(data =>  {
+      saveImageToDisk(data)
+      unsplash.photos.downloadPhoto(data);
+    })
+    .catch(error => console.log(error))
+}
 
 function saveImageToDisk(data) {
   // Create a writable path for the target file, '.pipe()' connects 
@@ -38,7 +44,7 @@ function saveImageToDisk(data) {
   const request = https.get(data.urls.regular, (response) => {
     response.pipe(file)
       .on('finish', () => {
-        console.log('Image saved!')
+        console.log('Image saved.')
         sendTweet(data);
       })
   });
@@ -49,6 +55,7 @@ function saveImageToDisk(data) {
 function sendTweet(data) {
   // console.log(data.urls)
   // console.log(data.user.links.html)
+  const imageJson = data
   let file = './images/file.jpeg';
   console.log(file);
   const params = {
@@ -63,9 +70,9 @@ function sendTweet(data) {
       console.log(err)
     } else {
       const id = data.media_id_string;
-      console.log(id)
+      // console.log(imageJson)
       const status = {
-        status: 'image test',
+        status: `Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
         media_ids: [id]
       }
       T.post('statuses/update', status, tweetCallback);
@@ -80,3 +87,5 @@ function sendTweet(data) {
     }
   }
 }
+
+setInterval(runTweet, 1000*60*60);
