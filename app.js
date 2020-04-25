@@ -18,27 +18,27 @@ const T = new Twit({
 const unsplash = new Unsplash({
   accessKey: `${process.env.UNSPLASH_ACCESS_KEY}`
 });
-
-console.log('Querying Unsplash...')
+console.log(Date());
+console.log('Starting application.')
 
 // Search unsplash for a photo, then download it,
 // then attach it to a tweet
 
-function runTweet() {
+function initBot() {
+  console.log(Date());
+  console.log('Querying Unsplash...')
   let fetchPhoto = unsplash.photos.getRandomPhoto({
     query: 'concrete brutalism'
   })
     .then(response => response.json())
     .then(data =>  {
-      saveImageToDisk(data)
       unsplash.photos.downloadPhoto(data);
+      saveImageToDisk(data);
     })
     .catch(error => console.log(error))
 }
 
 function saveImageToDisk(data) {
-  // Create a writable path for the target file, '.pipe()' connects 
-  // readable data to the writeable stream.
   console.log('Saving image to disk...')
   let file = fs.createWriteStream('./images/file.jpeg')
   const request = https.get(data.urls.regular, (response) => {
@@ -50,11 +50,10 @@ function saveImageToDisk(data) {
   });
 }
 
-// Wrapper function for composing a tweet. First uploads
-// the saved image, then writes the text.
+// Wrapper function for composing a tweet. First encodes and uploads
+// the saved image, then writes the tweet content.
+
 function sendTweet(data) {
-  // console.log(data.urls)
-  // console.log(data.user.links.html)
   const imageJson = data
   let file = './images/file.jpeg';
   console.log(file);
@@ -62,7 +61,7 @@ function sendTweet(data) {
     encoding: 'base64'
   }
   const base64content = fs.readFileSync(file, params);
-
+  console.log('Uploading media to Tweet...')
   T.post('media/upload', { media_data: base64content }, uploaded);
 
   function uploaded(err, data, response) {
@@ -70,11 +69,11 @@ function sendTweet(data) {
       console.log(err)
     } else {
       const id = data.media_id_string;
-      // console.log(imageJson)
       const status = {
         status: `Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
         media_ids: [id]
       }
+      console.log('Tweeting...')
       T.post('statuses/update', status, tweetCallback);
     }
   }
@@ -88,4 +87,5 @@ function sendTweet(data) {
   }
 }
 
-setInterval(runTweet, 1000*60*60);
+// Run the application on an hourly interval
+setInterval(initBot, 1000*60*60);

@@ -1,18 +1,21 @@
 {
   "name": "twitter-app",
   "version": "1.0.0",
-  "description": "Twitter app using Node.js",
+  "description": "Twitter bot using Node.js",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Jack Holdsworth",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.0",
     "twit": "^2.2.11",
     "unsplash-js": "^6.0.0"
+  },
+  "engines": {
+    "node": "13.11.0"
   }
 }
