@@ -19,7 +19,6 @@ const unsplash = new Unsplash({
   accessKey: `${process.env.UNSPLASH_ACCESS_KEY}`
 });
 
-const log = fs.readFileSync("./image_id_log.txt").toString('utf-8');
 
 console.log(Date());
 console.log('Starting application.');
@@ -29,6 +28,7 @@ initBot();
 // then downloads it and attaches it to a tweet
 
 function initBot() {
+  let log = fs.readFileSync("./image_id_log.txt").toString('utf-8');
   console.log(Date());
   console.log('Querying Unsplash...')
   let fetchPhoto = unsplash.photos.getRandomPhoto({
@@ -36,6 +36,7 @@ function initBot() {
   })
     .then(response => response.json())
     .then(data =>  {
+      console.log(log)
       if (log.includes(data.id)) {
         console.log('Image duplicate detected. Restarting loop');
         initBot();
@@ -65,7 +66,7 @@ function saveImageToDisk(data) {
     response.pipe(file)
       .on('finish', () => {
         console.log('Image saved.')
-        sendTweet(data);
+        // sendTweet(data);
       })
   });
 }
@@ -108,5 +109,4 @@ function sendTweet(data) {
 }
 
 // Run the application on an hourly interval
-// setInterval(initBot, 1000*60*60);
-initBot()
+setInterval(initBot, 1000);
