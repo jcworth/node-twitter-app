@@ -36,7 +36,6 @@ function initBot() {
   })
     .then(response => response.json())
     .then(data =>  {
-      console.log(log)
       if (log.includes(data.id)) {
         console.log('Image duplicate detected. Restarting loop');
         initBot();
@@ -108,4 +107,4 @@ function sendTweet(data) {
 }
 
 // Run the application on an hourly interval
-setInterval(initBot, 1000);
+setInterval(initBot, 1000*60*60);
