@@ -54,7 +54,7 @@ function writeLog(imageId) {
     if (err) {
       console.log(err);
     } else {
-      console.log('Image ID saved to log');
+      console.log('Image ID saved to log.');
     }
   })
 }
@@ -90,7 +90,7 @@ function sendTweet(data) {
     } else {
       const id = data.media_id_string;
       const status = {
-        status: `Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
+        status: ` 📸 Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
         media_ids: [id]
       }
       console.log('Tweeting...')
