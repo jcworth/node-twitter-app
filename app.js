@@ -66,7 +66,7 @@ function saveImageToDisk(data) {
     response.pipe(file)
       .on('finish', () => {
         console.log('Image saved.')
-        // sendTweet(data);
+        sendTweet(data);
       })
   });
 }
@@ -105,7 +105,6 @@ function sendTweet(data) {
       console.log('Tweet posted!')
     }
   }
-  // console.log(sentImages)
 }
 
 // Run the application on an hourly interval
