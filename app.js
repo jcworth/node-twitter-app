@@ -39,13 +39,24 @@ function initBot() {
         console.log('Image duplicate detected. Restarting loop')
         initBot();
       } else {
-        sentImages.push(data.id)
-        console.log(sentImages)
+        // sentImages.push(data.id)
+        // console.log(sentImages)
+        writeImageId(data.id);
         unsplash.photos.downloadPhoto(data);
         saveImageToDisk(data);
       }
     })
     .catch(error => console.log(error))
+}
+
+function writeImageId(imageId) {
+  fs.appendFile('image_id_log.txt', `${imageId}\n`, (err) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log('Image ID saved to log');
+    }
+  })
 }
 
 function saveImageToDisk(data) {
@@ -95,6 +106,7 @@ function sendTweet(data) {
       console.log('Tweet posted!')
     }
   }
+  console.log(sentImages)
 }
 
 // Run the application on an hourly interval
