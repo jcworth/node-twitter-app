@@ -24,6 +24,8 @@ console.log('Starting application.')
 // Search unsplash for a photo, then download it,
 // then attach it to a tweet
 
+const sentImages = [];
+
 function initBot() {
   console.log(Date());
   console.log('Querying Unsplash...')
@@ -32,8 +34,16 @@ function initBot() {
   })
     .then(response => response.json())
     .then(data =>  {
-      unsplash.photos.downloadPhoto(data);
-      saveImageToDisk(data);
+      console.log(data.id)
+      if (sentImages.includes(data.id)) {
+        console.log('Image duplicate detected. Restarting loop')
+        initBot();
+      } else {
+        sentImages.push(data.id)
+        console.log(sentImages)
+        unsplash.photos.downloadPhoto(data);
+        saveImageToDisk(data);
+      }
     })
     .catch(error => console.log(error))
 }
@@ -88,4 +98,5 @@ function sendTweet(data) {
 }
 
 // Run the application on an hourly interval
-setInterval(initBot, 1000*60*60);
+// setInterval(initBot, 1000*60*60);
+initBot()
