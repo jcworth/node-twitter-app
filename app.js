@@ -18,13 +18,17 @@ const T = new Twit({
 const unsplash = new Unsplash({
   accessKey: `${process.env.UNSPLASH_ACCESS_KEY}`
 });
-console.log(Date());
-console.log('Starting application.')
 
-// Search unsplash for a photo, then download it,
-// then attach it to a tweet
+
+console.log(Date());
+console.log('Starting application.');
+initBot();
+
+// Search unsplash for a photo, checks the log to see if it's a duplicate,
+// then downloads it and attaches it to a tweet
 
 function initBot() {
+  let log = fs.readFileSync("./image_id_log.txt").toString('utf-8');
   console.log(Date());
   console.log('Querying Unsplash...')
   let fetchPhoto = unsplash.photos.getRandomPhoto({
@@ -32,10 +36,26 @@ function initBot() {
   })
     .then(response => response.json())
     .then(data =>  {
-      unsplash.photos.downloadPhoto(data);
-      saveImageToDisk(data);
+      if (log.includes(data.id)) {
+        console.log('Image duplicate detected. Restarting loop');
+        initBot();
+      } else {
+        writeLog(data.id);
+        unsplash.photos.downloadPhoto(data);
+        saveImageToDisk(data);
+      }
     })
     .catch(error => console.log(error))
+}
+
+function writeLog(imageId) {
+  fs.appendFile('image_id_log.txt', `${imageId}\n`, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log('Image ID saved to log.');
+    }
+  })
 }
 
 function saveImageToDisk(data) {
@@ -56,7 +76,6 @@ function saveImageToDisk(data) {
 function sendTweet(data) {
   const imageJson = data
   let file = './images/file.jpeg';
-  console.log(file);
   const params = {
     encoding: 'base64'
   }
@@ -70,7 +89,7 @@ function sendTweet(data) {
     } else {
       const id = data.media_id_string;
       const status = {
-        status: `Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
+        status: ` 📸 Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
         media_ids: [id]
       }
       console.log('Tweeting...')
