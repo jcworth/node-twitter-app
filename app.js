@@ -85,7 +85,9 @@ function sendTweet(data) {
 
   function uploaded(err, data, response) {
     if (err) {
-      console.log(err)
+      console.log(err);
+      console.log('Reattempting upload');
+      setTimeout(sendTweet(), 5000);
     } else {
       const id = data.media_id_string;
       const status = {
@@ -99,7 +101,9 @@ function sendTweet(data) {
 
   function tweetCallback(err, data, response) {
     if (err) {
-      console.log(err)
+      console.log(err);
+      console.log('Reattempting Tweet');
+      setTimeout(sendTweet(), 5000);
     } else {
       console.log('Tweet posted!')
     }
