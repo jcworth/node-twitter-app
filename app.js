@@ -76,6 +76,7 @@ function saveImageToDisk(data) {
 function sendTweet(data) {
   const imageJson = data
   let file = './images/file.jpeg';
+  let userTwit = data.user.twitter_username
   const params = {
     encoding: 'base64'
   }
