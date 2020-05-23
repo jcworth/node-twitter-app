@@ -1,2 +1,4 @@
+images/*
+image_id_log.txt
 node_modules/
 .env
