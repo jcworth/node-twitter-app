@@ -76,7 +76,10 @@ function saveImageToDisk(data) {
 function sendTweet(data) {
   const imageJson = data
   let file = './images/file.jpeg';
-  let userTwit = data.user.twitter_username
+  let userTwit = data.user.twitter_username || ''
+  if (data.user.twitter_username) {
+    let userTwit = data.user.twitter_username
+  };
   const params = {
     encoding: 'base64'
   }
@@ -91,7 +94,7 @@ function sendTweet(data) {
       setTimeout(sendTweet(), 5000)
       const id = data.media_id_string;
       const status = {
-        status: ` 📸 Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
+        status: ` 📸 Credit: ${userTwit} ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
         media_ids: [id]
       }
       console.log('Tweeting...')
