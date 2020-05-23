@@ -32,12 +32,12 @@ function initBot() {
   console.log(Date());
   console.log('Querying Unsplash...')
   let fetchPhoto = unsplash.photos.getRandomPhoto({
-    query: 'concrete brutalism'
+    query: 'concrete'
   })
     .then(response => response.json())
     .then(data =>  {
       if (log.includes(data.id)) {
-        console.log('Image duplicate detected. Restarting loop');
+        console.log('Duplicate image detected. Restarting loop.');
         initBot();
       } else {
         writeLog(data.id);
@@ -85,10 +85,9 @@ function sendTweet(data) {
 
   function uploaded(err, data, response) {
     if (err) {
-      console.log(err);
-      console.log('Reattempting upload');
-      setTimeout(sendTweet(), 5000);
-    } else {
+      console.log(err)
+      console.log('Reattempting upload')
+      setTimeout(sendTweet(), 5000)
       const id = data.media_id_string;
       const status = {
         status: ` 📸 Credit: ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
