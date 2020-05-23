@@ -89,9 +89,10 @@ function sendTweet(data) {
 
   function uploaded(err, data, response) {
     if (err) {
-      console.log(err)
-      console.log('Reattempting upload')
-      setTimeout(sendTweet(), 5000)
+      console.log(err);
+      console.log('Reattempting upload');
+      setTimeout(sendTweet(), 5000);
+    } else {
       const id = data.media_id_string;
       const status = {
         status: ` 📸 Credit: ${userTwit} ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
@@ -99,8 +100,8 @@ function sendTweet(data) {
       }
       console.log('Tweeting...')
       T.post('statuses/update', status, tweetCallback);
-    }
-  }
+    };
+  };
 
   function tweetCallback(err, data, response) {
     if (err) {
