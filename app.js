@@ -28,7 +28,7 @@ initBot();
 // then downloads it and attaches it to a tweet
 
 function initBot() {
-  let log = fs.readFileSync("./image_id_log.txt").toString('utf-8');
+  let log = fs.readFileSync(".images/image_id_log.txt").toString('utf-8');
   console.log(Date());
   console.log('Querying Unsplash...')
   let fetchPhoto = unsplash.photos.getRandomPhoto({
@@ -76,10 +76,8 @@ function saveImageToDisk(data) {
 function sendTweet(data) {
   const imageJson = data
   let file = './images/file.jpeg';
-  let userTwit = data.user.twitter_username || ''
-  if (data.user.twitter_username) {
-    let userTwit = data.user.twitter_username
-  };
+  let userTwit;
+  data.user.twitter_username ? userTwit = '(@' + data.user.twitter_username + ') ' : userTwit = '';
   const params = {
     encoding: 'base64'
   }
@@ -95,7 +93,7 @@ function sendTweet(data) {
     } else {
       const id = data.media_id_string;
       const status = {
-        status: ` 📸 Credit: ${userTwit} ${imageJson.user.name} on Unsplash\n${imageJson.links.html}`,
+        status: ` 📸 Credit: ${imageJson.user.name} ${userTwit}on Unsplash\n${imageJson.links.html}`,
         media_ids: [id]
       }
       console.log('Tweeting...')

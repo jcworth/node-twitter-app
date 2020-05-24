@@ -1,4 +1,4 @@
 images/*
-image_id_log.txt
+!images/.gitkeep
 node_modules/
 .env
